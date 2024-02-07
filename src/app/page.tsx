@@ -1,9 +1,11 @@
 "use client";
+
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import FileBrowser , { Icons } from 'react-keyed-file-browser';
 import 'font-awesome/css/font-awesome.min.css';
 import 'react-keyed-file-browser/dist/react-keyed-file-browser.css';
+// import '@/packages/react-keyed-file-browser/dist/react-keyed-file-browser.css';
 
 const initialFiles = [
   {
@@ -50,13 +52,29 @@ export default function App() {
   };
 
   return (
-    <FileBrowser
-      files={files}
-      onCreateFolder={handleCreateFolder}
-      onRename={handleRename}
-      onDelete={handleDelete}
-      onDownload={handleDownload}
-      icons={Icons.FontAwesome(4)}
-    />
+    <>
+      <FileBrowser
+        files={files}
+        onCreateFolder={handleCreateFolder}
+        onRename={handleRename}
+        onDelete={handleDelete}
+        onDownload={handleDownload}
+        icons={Icons.FontAwesome(4)}
+        renderStyle="table"
+        showActionBar={false}
+        canFilter={false}
+        detailRenderer={(props) => {
+          console.log(props);
+          let name = props.file.key.split('/')
+          name = name.length ? name[name.length - 1] : ''
+          return (
+            <div>
+              <div className="bg-slate-200 p-4">{JSON.stringify(props.file)}</div>
+              <div>{name}</div>
+            </div>
+          )
+        }}
+      />
+    </>
   );
 };
