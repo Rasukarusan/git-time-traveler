@@ -1,80 +1,56 @@
 "use client";
 
-import React, { useState } from 'react';
-import ReactDOM from 'react-dom';
-import FileBrowser , { Icons } from 'react-keyed-file-browser';
-import 'font-awesome/css/font-awesome.min.css';
-import 'react-keyed-file-browser/dist/react-keyed-file-browser.css';
-// import '@/packages/react-keyed-file-browser/dist/react-keyed-file-browser.css';
+import { setChonkyDefaults } from 'chonky';
+import { ChonkyIconFA } from 'chonky-icon-fontawesome';
+// Somewhere in your `index.ts`:
+setChonkyDefaults({ iconComponent: ChonkyIconFA });
+import { FullFileBrowser } from 'chonky';
 
-const initialFiles = [
-  {
-    key: 'photos/animals/cat in a hat.png',
-    modified: +new Date('2017-01-01'),
-    size: 1.5 * 1024 * 1024,
-  },
-  {
-    key: 'photos/animals/kitten_ball.png',
-    modified: +new Date('2021-05-15'),
-    size: 545 * 1024,
-  },
-  {
-    key: 'photos/funny fall.gif',
-    modified: +new Date('2020-11-30'),
-    size: 2.3 * 1024 * 1024,
-  },
-  {
-    key: 'documents/letter chunks.doc',
-    modified: +new Date('2019-04-20'),
-    size: 680 * 1024,
-  },
-  // etc...
-];
+export default function MyFileBrowser () {
+    const files = [
+    {
+      "id": "qwerty123456",
+      "name": "Chonky Demo",
+      "isDir": true,
+      "childrenIds": [
+        "a9fd7c8a04db",
+      ],
+      "childrenCount": 1
+    },
+    {
+      "id": "a9fd7c8a04db",
+      "name": "15 nested folders",
+      "isDir": true,
+      "modDate": "2020-06-27T13:32:07.253Z",
+      "childrenIds": [
+        "e3bcade90390"
+      ],
+      "childrenCount": 1,
+      "parentId": "qwerty123456"
+    },
+    {
+      "id": "e3bcade90390",
+      "name": "Level 1",
+      "isDir": true,
+      "modDate": "2020-06-27T13:32:10.805Z",
+      "parentId": "a9fd7c8a04db",
+    },
+        {
+            id: 'mcd',
+            name: 'chonky-sphere-v2.png',
+            thumbnailUrl: 'https://chonky.io/chonky-sphere-v2.png',
+        },
+    ];
 
-export default function App() {
-  const [files, setFiles] = useState(initialFiles);
-
-  // Handlers for file actions like delete, rename, etc.
-  const handleCreateFolder = (key) => {
-    // Implement folder creation logic
-  };
-
-  const handleRename = (oldKey, newKey) => {
-    // Implement rename logic
-  };
-
-  const handleDelete = (key) => {
-    // Implement deletion logic
-  };
-
-  const handleDownload = (fileKeys) => {
-    // Implement download logic
-  };
-
-  return (
-    <>
-      <FileBrowser
-        files={files}
-        onCreateFolder={handleCreateFolder}
-        onRename={handleRename}
-        onDelete={handleDelete}
-        onDownload={handleDownload}
-        icons={Icons.FontAwesome(4)}
-        renderStyle="table"
-        showActionBar={false}
-        canFilter={false}
-        detailRenderer={(props) => {
-          console.log(props);
-          let name = props.file.key.split('/')
-          name = name.length ? name[name.length - 1] : ''
-          return (
-            <div>
-              <div className="bg-slate-200 p-4">{JSON.stringify(props.file)}</div>
-              <div>{name}</div>
-            </div>
-          )
-        }}
-      />
-    </>
-  );
+    const folderChain = [
+      { id: 'qwerty123456', name: 'Chonky Demo', isDir: true },
+      { id: 'a9fd7c8a04db', name: '15 nested folders', isDir: true },
+    ];
+    return (
+        <div style={{ height: 300 }}>
+            <FullFileBrowser files={files} folderChain={folderChain} />
+        </div>
+    );
 };
+
+
