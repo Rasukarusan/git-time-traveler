@@ -1,56 +1,120 @@
-"use client";
+"use client"
+import { useState } from 'react';
+import { CarryOutOutlined, CheckOutlined, FormOutlined } from '@ant-design/icons';
+import { Select, Switch, Tree } from 'antd';
+import type { TreeDataNode } from 'antd';
 
-import { setChonkyDefaults } from 'chonky';
-import { ChonkyIconFA } from 'chonky-icon-fontawesome';
-// Somewhere in your `index.ts`:
-setChonkyDefaults({ iconComponent: ChonkyIconFA });
-import { FullFileBrowser } from 'chonky';
+const treeData: TreeDataNode[] = [
+  {
+    title: 'parent 1',
+    key: '0-0',
+    icon: <CarryOutOutlined />,
+    children: [
+      {
+        title: 'parent 1-0',
+        key: '0-0-0',
+        icon: <CarryOutOutlined />,
+        children: [
+          { title: 'leaf', key: '0-0-0-0', icon: <CarryOutOutlined /> },
+          {
+            title: (
+              <>
+                <div>multiple line title</div>
+                <div>multiple line title</div>
+              </>
+            ),
+            key: '0-0-0-1',
+            icon: <CarryOutOutlined />,
+          },
+          { title: 'leaf', key: '0-0-0-2', icon: <CarryOutOutlined /> },
+        ],
+      },
+      {
+        title: 'parent 1-1',
+        key: '0-0-1',
+        icon: <CarryOutOutlined />,
+        children: [{ title: 'leaf', key: '0-0-1-0', icon: <CarryOutOutlined /> }],
+      },
+      {
+        title: 'parent 1-2',
+        key: '0-0-2',
+        icon: <CarryOutOutlined />,
+        children: [
+          { title: 'leaf', key: '0-0-2-0', icon: <CarryOutOutlined /> },
+          {
+            title: 'leaf',
+            key: '0-0-2-1',
+            icon: <CarryOutOutlined />,
+            switcherIcon: <FormOutlined />,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: 'parent 2',
+    key: '0-1',
+    icon: <CarryOutOutlined />,
+    children: [
+      {
+        title: 'parent 2-0',
+        key: '0-1-0',
+        icon: <CarryOutOutlined />,
+        children: [
+          { title: 'leaf', key: '0-1-0-0', icon: <CarryOutOutlined /> },
+          { title: 'leaf', key: '0-1-0-1', icon: <CarryOutOutlined /> },
+        ],
+      },
+    ],
+  },
+];
 
-export default function MyFileBrowser () {
-    const files = [
-    {
-      "id": "qwerty123456",
-      "name": "Chonky Demo",
-      "isDir": true,
-      "childrenIds": [
-        "a9fd7c8a04db",
-      ],
-      "childrenCount": 1
-    },
-    {
-      "id": "a9fd7c8a04db",
-      "name": "15 nested folders",
-      "isDir": true,
-      "modDate": "2020-06-27T13:32:07.253Z",
-      "childrenIds": [
-        "e3bcade90390"
-      ],
-      "childrenCount": 1,
-      "parentId": "qwerty123456"
-    },
-    {
-      "id": "e3bcade90390",
-      "name": "Level 1",
-      "isDir": true,
-      "modDate": "2020-06-27T13:32:10.805Z",
-      "parentId": "a9fd7c8a04db",
-    },
-        {
-            id: 'mcd',
-            name: 'chonky-sphere-v2.png',
-            thumbnailUrl: 'https://chonky.io/chonky-sphere-v2.png',
-        },
-    ];
+const App: React.FC = () => {
+  const [showLine, setShowLine] = useState<boolean>(true);
+  const [showIcon, setShowIcon] = useState<boolean>(false);
+  const [showLeafIcon, setShowLeafIcon] = useState<React.ReactNode>(true);
 
-    const folderChain = [
-      { id: 'qwerty123456', name: 'Chonky Demo', isDir: true },
-      { id: 'a9fd7c8a04db', name: '15 nested folders', isDir: true },
-    ];
-    return (
-        <div style={{ height: 300 }}>
-            <FullFileBrowser files={files} folderChain={folderChain} />
-        </div>
-    );
+  const onSelect = (selectedKeys: React.Key[], info: any) => {
+    console.log('selected', selectedKeys, info);
+  };
+
+  const handleLeafIconChange = (value: 'true' | 'false' | 'custom') => {
+    if (value === 'custom') {
+      return setShowLeafIcon(<CheckOutlined />);
+    }
+
+    if (value === 'true') {
+      return setShowLeafIcon(true);
+    }
+
+    return setShowLeafIcon(false);
+  };
+
+  return (
+    <div>
+      <div style={{ marginBottom: 16 }}>
+        showLine: <Switch checked={!!showLine} onChange={setShowLine} />
+        <br />
+        <br />
+        showIcon: <Switch checked={showIcon} onChange={setShowIcon} />
+        <br />
+        <br />
+        showLeafIcon:{' '}
+        <Select defaultValue="true" onChange={handleLeafIconChange}>
+          <Select.Option value="true">True</Select.Option>
+          <Select.Option value="false">False</Select.Option>
+          <Select.Option value="custom">Custom icon</Select.Option>
+        </Select>
+      </div>
+      <Tree
+        showLine={showLine ? { showLeafIcon } : false}
+        showIcon={showIcon}
+        defaultExpandedKeys={['0-0-0']}
+        onSelect={onSelect}
+        treeData={treeData}
+      />
+    </div>
+  );
 };
 
-
+export default App;
